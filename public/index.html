@@ -3,26 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="E-Commerce Management System - Manage customers, employees, products, and orders">
   <title>E-Commerce API</title>
   <link rel="stylesheet" href="style.css">
-  </style>
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1>E-Commerce API</h1>
-      <p>Manage customers, employees, products, and orders</p>
+    <header class="app-header">
+      <div class="header-content">
+        <div>
+          <h1>📦 E-Commerce Dashboard</h1>
+          <p>Manage customers, employees, products and orders with ease</p>
+        </div>
+        <div class="header-status">
+          <span class="status-badge online">● Online</span>
+        </div>
+      </div>
     </header>
 
-    <div class="nav-tabs">
-      <button class="nav-tab active" onclick="switchTab('customers')">Customers</button>
-      <button class="nav-tab" onclick="switchTab('employees')">Employees</button>
-      <button class="nav-tab" onclick="switchTab('products')">Products</button>
-      <button class="nav-tab" onclick="switchTab('orders')">Orders</button>
-    </div>
+    <nav class="nav-tabs" aria-label="Main tabs">
+      <button class="nav-tab active" onclick="switchTab(this, 'customers')">Customers</button>
+      <button class="nav-tab" onclick="switchTab(this, 'employees')">Employees</button>
+      <button class="nav-tab" onclick="switchTab(this, 'products')">Products</button>
+      <button class="nav-tab" onclick="switchTab(this, 'orders')">Orders</button>
+    </nav>
 
     <div class="content">
-      <!-- CUSTOMERS TAB -->
+      <!-- customers tab -->
       <div id="customers" class="tab-content active">
         <div class="section">
           <h2>Add Customer</h2>
@@ -89,7 +96,7 @@
         </div>
       </div>
 
-      <!-- EMPLOYEES TAB -->
+      <!-- employees tab -->
       <div id="employees" class="tab-content">
         <div class="section">
           <h2>Add Employee</h2>
@@ -168,7 +175,7 @@
         </div>
       </div>
 
-      <!-- PRODUCTS TAB -->
+      <!-- products tab -->
       <div id="products" class="tab-content">
         <div class="section">
           <h2>Add Product</h2>
@@ -238,7 +245,7 @@
         </div>
       </div>
 
-      <!-- ORDERS TAB -->
+      <!-- orders tab -->
       <div id="orders" class="tab-content">
         <div class="section">
           <h2>Create Order</h2>
@@ -323,28 +330,21 @@
   <script>
     const API_URL = 'http://localhost:3000/api';
 
-    // Tab switching
-    function switchTab(tabName) {
-      // Hide all tabs
-      document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-      });
-      document.querySelectorAll('.nav-tab').forEach(btn => {
-        btn.classList.remove('active');
-      });
+    //tab switching - accept the clicked element for more robust behavior
+    function switchTab(el, tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
 
-      // Show selected tab
       document.getElementById(tabName).classList.add('active');
-      event.target.classList.add('active');
+      if (el && el.classList) el.classList.add('active');
 
-      // Load data
       if (tabName === 'customers') loadCustomers();
       else if (tabName === 'employees') loadEmployees();
       else if (tabName === 'products') loadProducts();
       else if (tabName === 'orders') loadOrders();
     }
 
-    // Alert functions
+    //alert functions
     function showAlert(elementId, message, type) {
       const alert = document.getElementById(elementId);
       alert.textContent = message;
@@ -354,7 +354,7 @@
       }, 4000);
     }
 
-    // CUSTOMER FUNCTIONS
+    //customer functions
     function addCustomer() {
       const firstName = document.getElementById('customerFirstName').value;
       const lastName = document.getElementById('customerLastName').value;
@@ -474,7 +474,7 @@
       }
     }
 
-    // EMPLOYEE FUNCTIONS
+    //employee functions
     function addEmployee() {
       const firstName = document.getElementById('employeeFirstName').value;
       const lastName = document.getElementById('employeeLastName').value;
@@ -589,7 +589,7 @@
       }
     }
 
-    // PRODUCT FUNCTIONS
+    //product functions
     function addProduct() {
       const name = document.getElementById('productName').value;
       const sku = document.getElementById('productSku').value;
@@ -649,7 +649,7 @@
         const tbody = document.getElementById('productsBody');
         tbody.innerHTML = '';
 
-        // Update product dropdown for orders
+        //update product dropdown for orders
         const productSelect = document.getElementById('orderProduct');
         productSelect.innerHTML = '<option value="">-- Select Product --</option>';
         data.products.forEach(product => {
@@ -715,7 +715,7 @@
       }
     }
 
-    // ORDER FUNCTIONS
+    //order functions
     function addOrder() {
       const customerId = document.getElementById('orderCustomer').value;
       const productId = document.getElementById('orderProduct').value;
@@ -777,7 +777,7 @@
         const tbody = document.getElementById('ordersBody');
         tbody.innerHTML = '';
 
-        // Update customer dropdown
+        //update customer dropdown
         const customerSelect = document.getElementById('orderCustomer');
         customerSelect.innerHTML = '<option value="">-- Select Customer --</option>';
         customerData.customers.forEach(customer => {
@@ -844,7 +844,7 @@
       }
     }
 
-    // Initial load
+    //initial load
     window.addEventListener('load', () => {
       loadCustomers();
     });

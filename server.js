@@ -1,10 +1,15 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./src/config/database');
+const connectDB = require('./src/config/db');
 
 const app = express();
 
+// Connect to database immediately
+connectDB().catch(err => {
+  console.error('Failed to connect to database:', err.message);
+  process.exit(1);
+});
 
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
@@ -14,11 +19,14 @@ app.use(express.static('public'));
 app.set('json spaces', 2);
 
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path}`, req.body);
+  // avoid noisy logging for GET/static requests
+  if (req.method === 'GET') {
+    console.log(`${req.method} ${req.path}`);
+  } else {
+    console.log(`${req.method} ${req.path}`, req.body);
+  }
   next();
 });
-
-connectDB();
 
 const customerRoutes = require('./src/routes/customerRoutes');
 const employeeRoutes = require('./src/routes/employeeRoutes');
