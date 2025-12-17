@@ -5,7 +5,7 @@ const connectDB = require('./src/config/db');
 
 const app = express();
 
-// Connect to database immediately
+// Connect to database
 connectDB().catch(err => {
   console.error('Failed to connect to database:', err.message);
   process.exit(1);
@@ -19,7 +19,7 @@ app.use(express.static('public'));
 app.set('json spaces', 2);
 
 app.use((req, res, next) => {
-  // avoid noisy logging for GET/static requests
+
   if (req.method === 'GET') {
     console.log(`${req.method} ${req.path}`);
   } else {
@@ -28,15 +28,9 @@ app.use((req, res, next) => {
   next();
 });
 
-const customerRoutes = require('./src/routes/customerRoutes');
-const employeeRoutes = require('./src/routes/employeeRoutes');
-const productRoutes = require('./src/routes/productRoutes');
-const orderRoutes = require('./src/routes/orderRoutes');
+const sensorDeviceRoutes = require('./src/routes/sensorDeviceRoutes');
 
-app.use('/api/customers', customerRoutes);
-app.use('/api/employees', employeeRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/orders', orderRoutes);
+app.use('/api/items', sensorDeviceRoutes);
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({ message: 'API is running' });

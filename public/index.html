@@ -3,851 +3,1000 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="E-Commerce Management System - Manage customers, employees, products, and orders">
-  <title>E-Commerce API</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="description" content="IoT Sensor Device Management System - Manage sensor devices in your IoT system">
+  <title>IoT Sensor Device Management</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-  <div class="container">
+  <div class="app-wrapper">
+    <!-- Header -->
     <header class="app-header">
       <div class="header-content">
-        <div>
-          <h1>📦 E-Commerce Dashboard</h1>
-          <p>Manage customers, employees, products and orders with ease</p>
+        <div class="header-title">
+          <div class="icon-wrapper">
+            <i class="fas fa-network-wired"></i>
+          </div>
+          <div>
+            <h1>IoT Sensor Hub</h1>
+            <p>Real-time Sensor Device Management System</p>
+          </div>
         </div>
-        <div class="header-status">
-          <span class="status-badge online">● Online</span>
+        <div class="header-stats">
+          <div class="stat-item">
+            <i class="fas fa-microchip"></i>
+            <span id="totalDevices">0</span>
+            <small>Devices</small>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-check-circle"></i>
+            <span id="activeDevices">0</span>
+            <small>Active</small>
+          </div>
         </div>
       </div>
     </header>
 
-    <nav class="nav-tabs" aria-label="Main tabs">
-      <button class="nav-tab active" onclick="switchTab(this, 'customers')">Customers</button>
-      <button class="nav-tab" onclick="switchTab(this, 'employees')">Employees</button>
-      <button class="nav-tab" onclick="switchTab(this, 'products')">Products</button>
-      <button class="nav-tab" onclick="switchTab(this, 'orders')">Orders</button>
-    </nav>
-
-    <div class="content">
-      <!-- customers tab -->
-      <div id="customers" class="tab-content active">
-        <div class="section">
-          <h2>Add Customer</h2>
-          <div id="customerAlert" class="alert"></div>
-          <div class="form-group">
-            <div class="form-row">
-              <div>
-                <label>First Name:</label>
-                <input type="text" id="customerFirstName" placeholder="Name">
-              </div>
-              <div>
-                <label>Last Name:</label>
-                <input type="text" id="customerLastName" placeholder="lastName">
-              </div>
-            </div>
-            <div class="form-row">
-              <div>
-                <label>Email:</label>
-                <input type="email" id="customerEmail" placeholder="example@example.com">
-              </div>
-              <div>
-                <label>Phone:</label>
-                <input type="tel" id="customerPhone" placeholder="+1234567890">
-              </div>
-            </div>
-            <div class="form-row full">
-              <div class="address-section">
-                <label style="margin-bottom: 10px; display: block; font-weight: 600;">Address (Optional):</label>
-                <div class="form-row">
-                  <input type="text" id="customerStreet" placeholder="Street">
-                  <input type="text" id="customerCity" placeholder="City">
-                </div>
-                <div class="form-row">
-                  <input type="text" id="customerState" placeholder="State">
-                  <input type="text" id="customerPostal" placeholder="Postal Code">
-                </div>
-                <input type="text" id="customerCountry" placeholder="Country" style="margin-top: 10px;">
-              </div>
-            </div>
-          </div>
-          <button onclick="addCustomer()">Add Customer</button>
-          <button class="btn-secondary" onclick="clearCustomerForm()">Clear</button>
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Add Sensor Form Card -->
+      <section class="card form-card">
+        <div class="card-header">
+          <h2><i class="fas fa-plus-circle"></i> Register New Sensor Device</h2>
         </div>
-
-        <div class="section">
-          <h2>Customers List</h2>
-          <div id="customersLoading" class="loading">Loading</div>
-          <table id="customersTable" class="data-table" style="display: none;">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>City</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="customersBody"></tbody>
-          </table>
-          <div id="customersEmpty" class="empty-state" style="display: none;">
-            <p>No customers yet. Add one to get started!</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- employees tab -->
-      <div id="employees" class="tab-content">
-        <div class="section">
-          <h2>Add Employee</h2>
-          <div id="employeeAlert" class="alert"></div>
-          <div class="form-group">
-            <div class="form-row">
-              <div>
-                <label>First Name:</label>
-                <input type="text" id="employeeFirstName" placeholder="Name">
+        <div class="card-body">
+          <div id="sensorAlert" class="alert"></div>
+          
+          <form id="sensorForm" class="sensor-form">
+            <div class="form-grid">
+              <div class="form-field">
+                <label><i class="fas fa-tag"></i> Device Name</label>
+                <input type="text" id="deviceName" placeholder="e.g., Temperature Sensor 01" required />
               </div>
-              <div>
-                <label>Last Name:</label>
-                <input type="text" id="employeeLastName" placeholder="lastName">
+              
+              <div class="form-field">
+                <label><i class="fas fa-fingerprint"></i> Device ID</label>
+                <input type="text" id="deviceId" placeholder="e.g., SENSOR-001" required />
               </div>
-            </div>
-            <div class="form-row">
-              <div>
-                <label>Email:</label>
-                <input type="email" id="employeeEmail" placeholder="example@example.com">
-              </div>
-              <div>
-                <label>Phone:</label>
-                <input type="tel" id="employeePhone" placeholder="+1234567890">
-              </div>
-            </div>
-            <div class="form-row">
-              <div>
-                <label>Position:</label>
-                <select id="employeePosition">
-                  <option value="Sales Representative">Sales Representative</option>
-                  <option value="Manager">Manager</option>
-                  <option value="Inventory Specialist">Inventory Specialist</option>
-                  <option value="Customer Support">Customer Support</option>
-                  <option value="Admin">Admin</option>
+              
+              <div class="form-field">
+                <label><i class="fas fa-thermometer-half"></i> Sensor Type</label>
+                <select id="sensorType" required>
+                  <option value="Temperature">🌡️ Temperature</option>
+                  <option value="Humidity">💧 Humidity</option>
+                  <option value="Motion">🚶 Motion</option>
+                  <option value="Light">💡 Light</option>
+                  <option value="Pressure">📊 Pressure</option>
+                  <option value="Gas">☁️ Gas</option>
+                  <option value="Proximity">📡 Proximity</option>
+                  <option value="Other">🔧 Other</option>
                 </select>
               </div>
-              <div>
-                <label>Department:</label>
-                <input type="text" id="employeeDepartment" placeholder="Sales">
+              
+              <div class="form-field">
+                <label><i class="fas fa-map-marker-alt"></i> Location</label>
+                <input type="text" id="location" placeholder="e.g., Building A, Room 101" required />
               </div>
-            </div>
-            <div class="form-row">
-              <div>
-                <label>Salary:</label>
-                <input type="number" id="employeeSalary" placeholder="50000">
-              </div>
-              <div>
-                <label>Hire Date:</label>
-                <input type="date" id="employeeHireDate">
-              </div>
-            </div>
-          </div>
-          <button onclick="addEmployee()">Add Employee</button>
-          <button class="btn-secondary" onclick="clearEmployeeForm()">Clear</button>
-        </div>
-
-        <div class="section">
-          <h2>Employees List</h2>
-          <div id="employeesLoading" class="loading">Loading</div>
-          <table id="employeesTable" class="data-table" style="display: none;">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Position</th>
-                <th>Department</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="employeesBody"></tbody>
-          </table>
-          <div id="employeesEmpty" class="empty-state" style="display: none;">
-            <p>No employees yet. Add one to get started!</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- products tab -->
-      <div id="products" class="tab-content">
-        <div class="section">
-          <h2>Add Product</h2>
-          <div id="productAlert" class="alert"></div>
-          <div class="form-group">
-            <div class="form-row">
-              <div>
-                <label>Product Name:</label>
-                <input type="text" id="productName" placeholder="Laptop">
-              </div>
-              <div>
-                <label>SKU:</label>
-                <input type="text" id="productSku" placeholder="SKU-001">
-              </div>
-            </div>
-            <div class="form-row">
-              <div>
-                <label>Price:</label>
-                <input type="number" id="productPrice" placeholder="999.99" step="0.01">
-              </div>
-              <div>
-                <label>Category:</label>
-                <input type="text" id="productCategory" placeholder="Electronics">
-              </div>
-            </div>
-            <div class="form-row">
-              <div>
-                <label>Quantity:</label>
-                <input type="number" id="productQuantity" placeholder="100" min="0">
-              </div>
-              <div>
-                <label>Manufacturer:</label>
-                <input type="text" id="productManufacturer" placeholder="Dell">
-              </div>
-            </div>
-            <div class="form-row full">
-              <div>
-                <label>Description:</label>
-                <textarea id="productDescription" placeholder="Product description..."></textarea>
-              </div>
-            </div>
-          </div>
-          <button onclick="addProduct()">Add Product</button>
-          <button class="btn-secondary" onclick="clearProductForm()">Clear</button>
-        </div>
-
-        <div class="section">
-          <h2>Products List</h2>
-          <div id="productsLoading" class="loading">Loading</div>
-          <table id="productsTable" class="data-table" style="display: none;">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>SKU</th>
-                <th>Price</th>
-                <th>Category</th>
-                <th>Quantity</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="productsBody"></tbody>
-          </table>
-          <div id="productsEmpty" class="empty-state" style="display: none;">
-            <p>No products yet. Add one to get started!</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- orders tab -->
-      <div id="orders" class="tab-content">
-        <div class="section">
-          <h2>Create Order</h2>
-          <div id="orderAlert" class="alert"></div>
-          <div class="form-group">
-            <div class="form-row">
-              <div>
-                <label>Customer:</label>
-                <select id="orderCustomer">
-                  <option value="">-- Select Customer --</option>
+              
+              <div class="form-field">
+                <label><i class="fas fa-power-off"></i> Status</label>
+                <select id="status" required>
+                  <option value="Active">🟢 Active</option>
+                  <option value="Inactive">⚪ Inactive</option>
+                  <option value="Maintenance">🟡 Maintenance</option>
+                  <option value="Error">🔴 Error</option>
                 </select>
               </div>
-              <div>
-                <label>Product:</label>
-                <select id="orderProduct">
-                  <option value="">-- Select Product --</option>
-                </select>
+              
+              <div class="form-field">
+                <label><i class="fas fa-ruler"></i> Unit</label>
+                <input type="text" id="unit" placeholder="e.g., Celsius, Percent, Lux" />
+              </div>
+              
+              <div class="form-field full-width">
+                <label><i class="fas fa-chart-line"></i> Last Reading</label>
+                <input type="number" id="lastReading" step="0.01" placeholder="Enter sensor reading value" />
               </div>
             </div>
-            <div class="form-row">
-              <div>
-                <label>Quantity:</label>
-                <input type="number" id="orderQuantity" placeholder="1" min="1">
-              </div>
-              <div>
-                <label>Status:</label>
-                <select id="orderStatus">
-                  <option value="Pending">Pending</option>
-                  <option value="Processing">Processing</option>
-                  <option value="Shipped">Shipped</option>
-                  <option value="Delivered">Delivered</option>
-                  <option value="Cancelled">Cancelled</option>
-                </select>
-              </div>
+            
+            <div class="form-actions">
+              <button type="button" class="btn btn-primary" onclick="addSensorDevice()">
+                <i class="fas fa-plus"></i> Add Sensor Device
+              </button>
+              <button type="button" class="btn btn-secondary" onclick="clearSensorForm()">
+                <i class="fas fa-redo"></i> Clear Form
+              </button>
             </div>
-            <div class="form-row">
-              <div>
-                <label>Tax:</label>
-                <input type="number" id="orderTax" placeholder="0" step="0.01" value="0">
-              </div>
-              <div>
-                <label>Shipping Cost:</label>
-                <input type="number" id="orderShipping" placeholder="0" step="0.01" value="0">
-              </div>
-            </div>
-            <div class="form-row full">
-              <div>
-                <label>Notes:</label>
-                <textarea id="orderNotes" placeholder="Order notes..."></textarea>
-              </div>
-            </div>
-          </div>
-          <button onclick="addOrder()">Create Order</button>
-          <button class="btn-secondary" onclick="clearOrderForm()">Clear</button>
+          </form>
         </div>
+      </section>
 
-        <div class="section">
-          <h2>Orders List</h2>
-          <div id="ordersLoading" class="loading">Loading</div>
-          <table id="ordersTable" class="data-table" style="display: none;">
-            <thead>
-              <tr>
-                <th>Order #</th>
-                <th>Customer</th>
-                <th>Items</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="ordersBody"></tbody>
-          </table>
-          <div id="ordersEmpty" class="empty-state" style="display: none;">
-            <p>No orders yet. Create one to get started!</p>
+      <!-- Sensor Devices Grid -->
+      <section class="card devices-card">
+        <div class="card-header">
+          <h2><i class="fas fa-th-large"></i> Sensor Devices</h2>
+          <button class="btn-icon" onclick="loadSensorDevices()" title="Refresh">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+        <div class="card-body">
+          <div id="sensorsLoading" class="loading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>Loading sensor devices...</span>
+          </div>
+          
+          <div id="sensorsGrid" class="sensors-grid" style="display:none;"></div>
+          
+          <div id="sensorsEmpty" class="empty-state" style="display:none;">
+            <i class="fas fa-inbox"></i>
+            <h3>No Sensor Devices Found</h3>
+            <p>Start by adding your first sensor device to begin monitoring your IoT system.</p>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   </div>
 
   <script>
     const API_URL = 'http://localhost:3000/api';
+    let currentEditId = null;
 
-    //tab switching - accept the clicked element for more robust behavior
-    function switchTab(el, tabName) {
-      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
-
-      document.getElementById(tabName).classList.add('active');
-      if (el && el.classList) el.classList.add('active');
-
-      if (tabName === 'customers') loadCustomers();
-      else if (tabName === 'employees') loadEmployees();
-      else if (tabName === 'products') loadProducts();
-      else if (tabName === 'orders') loadOrders();
-    }
-
-    //alert functions
+    // Alert functions
     function showAlert(elementId, message, type) {
       const alert = document.getElementById(elementId);
-      alert.textContent = message;
-      alert.className = `alert ${type}`;
+      alert.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+      alert.className = `alert alert-${type}`;
+      alert.style.display = 'block';
       setTimeout(() => {
-        alert.className = 'alert';
-      }, 4000);
+        alert.style.display = 'none';
+      }, 5000);
     }
 
-    //customer functions
-    function addCustomer() {
-      const firstName = document.getElementById('customerFirstName').value;
-      const lastName = document.getElementById('customerLastName').value;
-      const email = document.getElementById('customerEmail').value;
-      const phone = document.getElementById('customerPhone').value;
-
-      if (!firstName || !lastName || !email || !phone) {
-        showAlert('customerAlert', 'Please fill in all required fields', 'error');
-        return;
-      }
-
-      const address = {
-        street: document.getElementById('customerStreet').value,
-        city: document.getElementById('customerCity').value,
-        state: document.getElementById('customerState').value,
-        postalCode: document.getElementById('customerPostal').value,
-        country: document.getElementById('customerCountry').value
+    // Get sensor icon based on type
+    function getSensorIcon(type) {
+      const icons = {
+        'Temperature': 'fa-thermometer-half',
+        'Humidity': 'fa-tint',
+        'Motion': 'fa-running',
+        'Light': 'fa-lightbulb',
+        'Pressure': 'fa-compress',
+        'Gas': 'fa-cloud',
+        'Proximity': 'fa-broadcast-tower',
+        'Other': 'fa-microchip'
       };
-
-      fetch(`${API_URL}/customers`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName, lastName, email, phone, address })
-      })
-      .then(res => {
-        if (!res.ok) {
-          return res.json().then(data => Promise.reject(data));
-        }
-        return res.json();
-      })
-      .then(data => {
-        showAlert('customerAlert', 'Customer added successfully!', 'success');
-        clearCustomerForm();
-        loadCustomers();
-      })
-      .catch(err => {
-        const message = err.message || 'Error adding customer';
-        showAlert('customerAlert', message, 'error');
-        console.error('Customer error:', err);
-      });
+      return icons[type] || 'fa-microchip';
     }
 
-    function clearCustomerForm() {
-      document.getElementById('customerFirstName').value = '';
-      document.getElementById('customerLastName').value = '';
-      document.getElementById('customerEmail').value = '';
-      document.getElementById('customerPhone').value = '';
-      document.getElementById('customerStreet').value = '';
-      document.getElementById('customerCity').value = '';
-      document.getElementById('customerState').value = '';
-      document.getElementById('customerPostal').value = '';
-      document.getElementById('customerCountry').value = '';
+    // Get sensor color based on type
+    function getSensorColor(type) {
+      const colors = {
+        'Temperature': '#EF4444',
+        'Humidity': '#3B82F6',
+        'Motion': '#10B981',
+        'Light': '#F59E0B',
+        'Pressure': '#8B5CF6',
+        'Gas': '#6B7280',
+        'Proximity': '#EC4899',
+        'Other': '#6366F1'
+      };
+      return colors[type] || '#6366F1';
     }
 
-    function loadCustomers() {
-      document.getElementById('customersLoading').style.display = 'block';
-      document.getElementById('customersTable').style.display = 'none';
-
-      fetch(`${API_URL}/customers`)
-      .then(res => res.json())
-      .then(data => {
-        const tbody = document.getElementById('customersBody');
-        tbody.innerHTML = '';
-
-        if (data.customers.length === 0) {
-          document.getElementById('customersEmpty').style.display = 'block';
-          document.getElementById('customersTable').style.display = 'none';
-          document.getElementById('customersLoading').style.display = 'none';
-          return;
-        }
-
-        document.getElementById('customersEmpty').style.display = 'none';
-        document.getElementById('customersTable').style.display = 'table';
-
-        data.customers.forEach(customer => {
-          const row = `
-            <tr>
-              <td>${customer._id.substring(0, 8)}...</td>
-              <td>${customer.firstName} ${customer.lastName}</td>
-              <td>${customer.email}</td>
-              <td>${customer.phone}</td>
-              <td>${customer.address?.city || '-'}</td>
-              <td class="action-buttons">
-                <button class="btn-danger" onclick="deleteCustomer('${customer._id}')">Delete</button>
-              </td>
-            </tr>
-          `;
-          tbody.innerHTML += row;
-        });
-
-        document.getElementById('customersLoading').style.display = 'none';
-      })
-      .catch(err => {
-        showAlert('customerAlert', 'Error loading customers', 'error');
-        document.getElementById('customersLoading').style.display = 'none';
-      });
-    }
-
-    function deleteCustomer(id) {
-      if (confirm('Are you sure?')) {
-        fetch(`${API_URL}/customers/${id}`, { method: 'DELETE' })
-        .then(res => {
-          if (!res.ok) {
-            return res.json().then(data => Promise.reject(data));
-          }
-          return res.json();
-        })
-        .then(() => {
-          showAlert('customerAlert', 'Deleted!', 'success');
-          loadCustomers();
-        })
-        .catch(err => {
-          const message = err.message || 'Error deleting customer';
-          showAlert('customerAlert', message, 'error');
-          console.error('Delete error:', err);
-        });
+    // Format reading with visual indicator
+    function formatReading(value, unit, type) {
+      if (value === null || value === undefined) return 'N/A';
+      
+      let displayValue = parseFloat(value).toFixed(2);
+      let indicator = '';
+      
+      // Add visual indicators based on sensor type
+      if (type === 'Temperature') {
+        if (value > 30) indicator = '🔥';
+        else if (value < 10) indicator = '❄️';
+        else indicator = '🌡️';
+      } else if (type === 'Humidity') {
+        if (value > 70) indicator = '💧';
+        else if (value < 30) indicator = '🏜️';
+        else indicator = '💨';
+      } else if (type === 'Motion') {
+        indicator = value > 0 ? '🚶' : '🛑';
+      } else if (type === 'Light') {
+        indicator = value > 500 ? '☀️' : '🌙';
       }
+      
+      return `${indicator} ${displayValue} ${unit || ''}`;
     }
 
-    //employee functions
-    function addEmployee() {
-      const firstName = document.getElementById('employeeFirstName').value;
-      const lastName = document.getElementById('employeeLastName').value;
-      const email = document.getElementById('employeeEmail').value;
-      const phone = document.getElementById('employeePhone').value;
-      const position = document.getElementById('employeePosition').value;
-      const department = document.getElementById('employeeDepartment').value;
-      const salary = parseFloat(document.getElementById('employeeSalary').value) || 0;
-      const hireDate = document.getElementById('employeeHireDate').value;
+    // Add Sensor Device
+    function addSensorDevice() {
+      const deviceName = $('#deviceName').val().trim();
+      const deviceId = $('#deviceId').val().trim();
+      const sensorType = $('#sensorType').val();
+      const location = $('#location').val().trim();
+      const status = $('#status').val();
+      const unit = $('#unit').val().trim() || 'Celsius';
+      const lastReading = parseFloat($('#lastReading').val()) || 0;
 
-      if (!firstName || !lastName || !email || !phone || !department) {
-        showAlert('employeeAlert', 'Please fill in all required fields', 'error');
+      if (!deviceName || !deviceId || !location) {
+        showAlert('sensorAlert', 'Please fill in all required fields (Device Name, Device ID, Location)', 'error');
         return;
       }
 
-      fetch(`${API_URL}/employees`, {
+      $.ajax({
+        url: `${API_URL}/items`,
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName, lastName, email, phone, position, department, salary, hireDate })
-      })
-      .then(res => {
-        if (!res.ok) {
-          return res.json().then(data => Promise.reject(data));
+        contentType: 'application/json',
+        data: JSON.stringify({
+          deviceName,
+          deviceId,
+          sensorType,
+          location,
+          status,
+          unit,
+          lastReading
+        }),
+        success: function(data) {
+          showAlert('sensorAlert', 'Sensor device added successfully!', 'success');
+          clearSensorForm();
+          loadSensorDevices();
+        },
+        error: function(xhr) {
+          const message = xhr.responseJSON?.message || 'Error adding sensor device';
+          showAlert('sensorAlert', message, 'error');
         }
-        return res.json();
-      })
-      .then(data => {
-        showAlert('employeeAlert', 'Employee added successfully!', 'success');
-        clearEmployeeForm();
-        loadEmployees();
-      })
-      .catch(err => {
-        const message = err.message || 'Error adding employee';
-        showAlert('employeeAlert', message, 'error');
-        console.error('Employee error:', err);
       });
     }
 
-    function clearEmployeeForm() {
-      document.getElementById('employeeFirstName').value = '';
-      document.getElementById('employeeLastName').value = '';
-      document.getElementById('employeeEmail').value = '';
-      document.getElementById('employeePhone').value = '';
-      document.getElementById('employeePosition').value = 'Sales Representative';
-      document.getElementById('employeeDepartment').value = '';
-      document.getElementById('employeeSalary').value = '';
-      document.getElementById('employeeHireDate').value = '';
-    }
+    // Update Sensor Device
+    function updateSensorDevice() {
+      if (!currentEditId) return;
+      
+      const deviceName = $('#deviceName').val().trim();
+      const deviceId = $('#deviceId').val().trim();
+      const sensorType = $('#sensorType').val();
+      const location = $('#location').val().trim();
+      const status = $('#status').val();
+      const unit = $('#unit').val().trim() || 'Celsius';
+      const lastReading = parseFloat($('#lastReading').val()) || 0;
 
-    function loadEmployees() {
-      document.getElementById('employeesLoading').style.display = 'block';
-      document.getElementById('employeesTable').style.display = 'none';
-
-      fetch(`${API_URL}/employees`)
-      .then(res => res.json())
-      .then(data => {
-        const tbody = document.getElementById('employeesBody');
-        tbody.innerHTML = '';
-
-        if (data.employees.length === 0) {
-          document.getElementById('employeesEmpty').style.display = 'block';
-          document.getElementById('employeesTable').style.display = 'none';
-          document.getElementById('employeesLoading').style.display = 'none';
-          return;
-        }
-
-        document.getElementById('employeesEmpty').style.display = 'none';
-        document.getElementById('employeesTable').style.display = 'table';
-
-        data.employees.forEach(employee => {
-          const row = `
-            <tr>
-              <td>${employee._id.substring(0, 8)}...</td>
-              <td>${employee.firstName} ${employee.lastName}</td>
-              <td>${employee.email}</td>
-              <td>${employee.position}</td>
-              <td>${employee.department}</td>
-              <td class="action-buttons">
-                <button class="btn-danger" onclick="deleteEmployee('${employee._id}')">Delete</button>
-              </td>
-            </tr>
-          `;
-          tbody.innerHTML += row;
-        });
-
-        document.getElementById('employeesLoading').style.display = 'none';
-      })
-      .catch(err => {
-        showAlert('employeeAlert', 'Error loading employees', 'error');
-        document.getElementById('employeesLoading').style.display = 'none';
-      });
-    }
-
-    function deleteEmployee(id) {
-      if (confirm('Are you sure?')) {
-        fetch(`${API_URL}/employees/${id}`, { method: 'DELETE' })
-        .then(res => {
-          if (!res.ok) {
-            return res.json().then(data => Promise.reject(data));
-          }
-          return res.json();
-        })
-        .then(() => {
-          showAlert('employeeAlert', 'Deleted!', 'success');
-          loadEmployees();
-        })
-        .catch(err => {
-          const message = err.message || 'Error deleting employee';
-          showAlert('employeeAlert', message, 'error');
-          console.error('Delete error:', err);
-        });
-      }
-    }
-
-    //product functions
-    function addProduct() {
-      const name = document.getElementById('productName').value;
-      const sku = document.getElementById('productSku').value;
-      const price = parseFloat(document.getElementById('productPrice').value);
-      const category = document.getElementById('productCategory').value;
-      const quantity = parseInt(document.getElementById('productQuantity').value) || 0;
-      const manufacturer = document.getElementById('productManufacturer').value;
-      const description = document.getElementById('productDescription').value;
-
-      if (!name || !sku || !price || !category) {
-        showAlert('productAlert', 'Please fill in all required fields', 'error');
+      if (!deviceName || !deviceId || !location) {
+        showAlert('sensorAlert', 'Please fill in all required fields', 'error');
         return;
       }
 
-      const inventory = { quantity };
-
-      fetch(`${API_URL}/products`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, sku, price, category, manufacturer, description, inventory })
-      })
-      .then(res => {
-        if (!res.ok) {
-          return res.json().then(data => Promise.reject(data));
+      $.ajax({
+        url: `${API_URL}/items/${currentEditId}`,
+        method: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          deviceName,
+          deviceId,
+          sensorType,
+          location,
+          status,
+          unit,
+          lastReading
+        }),
+        success: function(data) {
+          showAlert('sensorAlert', 'Sensor device updated successfully!', 'success');
+          clearSensorForm();
+          currentEditId = null;
+          $('.form-actions button:first').html('<i class="fas fa-plus"></i> Add Sensor Device').attr('onclick', 'addSensorDevice()');
+          loadSensorDevices();
+        },
+        error: function(xhr) {
+          const message = xhr.responseJSON?.message || 'Error updating sensor device';
+          showAlert('sensorAlert', message, 'error');
         }
-        return res.json();
-      })
-      .then(data => {
-        showAlert('productAlert', 'Product added successfully!', 'success');
-        clearProductForm();
-        loadProducts();
-      })
-      .catch(err => {
-        const message = err.message || 'Error adding product';
-        showAlert('productAlert', message, 'error');
-        console.error('Product error:', err);
       });
     }
 
-    function clearProductForm() {
-      document.getElementById('productName').value = '';
-      document.getElementById('productSku').value = '';
-      document.getElementById('productPrice').value = '';
-      document.getElementById('productCategory').value = '';
-      document.getElementById('productQuantity').value = '';
-      document.getElementById('productManufacturer').value = '';
-      document.getElementById('productDescription').value = '';
+    // Clear Form
+    function clearSensorForm() {
+      $('#deviceName').val('');
+      $('#deviceId').val('');
+      $('#sensorType').val('Temperature');
+      $('#location').val('');
+      $('#status').val('Active');
+      $('#unit').val('Celsius');
+      $('#lastReading').val('');
+      currentEditId = null;
+      $('.form-actions button:first').html('<i class="fas fa-plus"></i> Add Sensor Device').attr('onclick', 'addSensorDevice()');
     }
 
-    function loadProducts() {
-      document.getElementById('productsLoading').style.display = 'block';
-      document.getElementById('productsTable').style.display = 'none';
-
-      fetch(`${API_URL}/products`)
-      .then(res => res.json())
-      .then(data => {
-        const tbody = document.getElementById('productsBody');
-        tbody.innerHTML = '';
-
-        //update product dropdown for orders
-        const productSelect = document.getElementById('orderProduct');
-        productSelect.innerHTML = '<option value="">-- Select Product --</option>';
-        data.products.forEach(product => {
-          const option = document.createElement('option');
-          option.value = product._id;
-          option.textContent = `${product.name} (${product.inventory.quantity} in stock)`;
-          productSelect.appendChild(option);
-        });
-
-        if (data.products.length === 0) {
-          document.getElementById('productsEmpty').style.display = 'block';
-          document.getElementById('productsTable').style.display = 'none';
-          document.getElementById('productsLoading').style.display = 'none';
-          return;
+    // Edit Sensor Device
+    function editSensorDevice(id) {
+      $.ajax({
+        url: `${API_URL}/items/${id}`,
+        method: 'GET',
+        success: function(device) {
+          $('#deviceName').val(device.deviceName);
+          $('#deviceId').val(device.deviceId);
+          $('#sensorType').val(device.sensorType);
+          $('#location').val(device.location);
+          $('#status').val(device.status);
+          $('#unit').val(device.unit);
+          $('#lastReading').val(device.lastReading);
+          
+          currentEditId = id;
+          $('.form-actions button:first').html('<i class="fas fa-save"></i> Update Sensor Device').attr('onclick', 'updateSensorDevice()');
+          
+          // Scroll to form
+          document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        },
+        error: function(xhr) {
+          showAlert('sensorAlert', 'Error loading sensor device', 'error');
         }
-
-        document.getElementById('productsEmpty').style.display = 'none';
-        document.getElementById('productsTable').style.display = 'table';
-
-        data.products.forEach(product => {
-          const row = `
-            <tr>
-              <td>${product._id.substring(0, 8)}...</td>
-              <td>${product.name}</td>
-              <td>${product.sku}</td>
-              <td>$${product.price.toFixed(2)}</td>
-              <td>${product.category}</td>
-              <td>${product.inventory.quantity}</td>
-              <td class="action-buttons">
-                <button class="btn-danger" onclick="deleteProduct('${product._id}')">Delete</button>
-              </td>
-            </tr>
-          `;
-          tbody.innerHTML += row;
-        });
-
-        document.getElementById('productsLoading').style.display = 'none';
-      })
-      .catch(err => {
-        showAlert('productAlert', 'Error loading products', 'error');
-        document.getElementById('productsLoading').style.display = 'none';
       });
     }
 
-    function deleteProduct(id) {
-      if (confirm('Are you sure?')) {
-        fetch(`${API_URL}/products/${id}`, { method: 'DELETE' })
-        .then(res => {
-          if (!res.ok) {
-            return res.json().then(data => Promise.reject(data));
+    // Delete Sensor Device
+    function deleteSensorDevice(id) {
+      if (confirm('Are you sure you want to delete this sensor device?')) {
+        $.ajax({
+          url: `${API_URL}/items/${id}`,
+          method: 'DELETE',
+          success: function(data) {
+            showAlert('sensorAlert', 'Sensor device deleted successfully!', 'success');
+            loadSensorDevices();
+          },
+          error: function(xhr) {
+            const message = xhr.responseJSON?.message || 'Error deleting sensor device';
+            showAlert('sensorAlert', message, 'error');
           }
-          return res.json();
-        })
-        .then(() => {
-          showAlert('productAlert', 'Deleted!', 'success');
-          loadProducts();
-        })
-        .catch(err => {
-          const message = err.message || 'Error deleting product';
-          showAlert('productAlert', message, 'error');
-          console.error('Delete error:', err);
         });
       }
     }
 
-    //order functions
-    function addOrder() {
-      const customerId = document.getElementById('orderCustomer').value;
-      const productId = document.getElementById('orderProduct').value;
-      const quantity = parseInt(document.getElementById('orderQuantity').value);
-      const tax = parseFloat(document.getElementById('orderTax').value) || 0;
-      const shippingCost = parseFloat(document.getElementById('orderShipping').value) || 0;
-      const notes = document.getElementById('orderNotes').value;
+    // Load Sensor Devices
+    function loadSensorDevices() {
+      $('#sensorsLoading').show();
+      $('#sensorsGrid').hide();
+      $('#sensorsEmpty').hide();
 
-      if (!customerId || !productId || !quantity) {
-        showAlert('orderAlert', 'Please select customer, product and quantity', 'error');
-        return;
-      }
-
-      const items = [{ productId, quantity }];
-
-      fetch(`${API_URL}/orders`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ customerId, items, tax, shippingCost, notes })
-      })
-      .then(res => {
-        if (!res.ok) {
-          return res.json().then(data => Promise.reject(data));
-        }
-        return res.json();
-      })
-      .then(data => {
-        showAlert('orderAlert', 'Order created successfully!', 'success');
-        clearOrderForm();
-        loadOrders();
-        loadProducts();
-      })
-      .catch(err => {
-        const message = err.message || 'Error creating order';
-        showAlert('orderAlert', message, 'error');
-        console.error('Order error:', err);
-      });
-    }
-
-    function clearOrderForm() {
-      document.getElementById('orderCustomer').value = '';
-      document.getElementById('orderProduct').value = '';
-      document.getElementById('orderQuantity').value = '';
-      document.getElementById('orderStatus').value = 'Pending';
-      document.getElementById('orderTax').value = '0';
-      document.getElementById('orderShipping').value = '0';
-      document.getElementById('orderNotes').value = '';
-    }
-
-    function loadOrders() {
-      document.getElementById('ordersLoading').style.display = 'block';
-      document.getElementById('ordersTable').style.display = 'none';
-
-      Promise.all([
-        fetch(`${API_URL}/orders`).then(res => res.json()),
-        fetch(`${API_URL}/customers`).then(res => res.json())
-      ])
-      .then(([orderData, customerData]) => {
-        const tbody = document.getElementById('ordersBody');
-        tbody.innerHTML = '';
-
-        //update customer dropdown
-        const customerSelect = document.getElementById('orderCustomer');
-        customerSelect.innerHTML = '<option value="">-- Select Customer --</option>';
-        customerData.customers.forEach(customer => {
-          const option = document.createElement('option');
-          option.value = customer._id;
-          option.textContent = `${customer.firstName} ${customer.lastName}`;
-          customerSelect.appendChild(option);
-        });
-
-        if (orderData.orders.length === 0) {
-          document.getElementById('ordersEmpty').style.display = 'block';
-          document.getElementById('ordersTable').style.display = 'none';
-          document.getElementById('ordersLoading').style.display = 'none';
-          return;
-        }
-
-        document.getElementById('ordersEmpty').style.display = 'none';
-        document.getElementById('ordersTable').style.display = 'table';
-
-        orderData.orders.forEach(order => {
-          const row = `
-            <tr>
-              <td>${order.orderNumber}</td>
-              <td>${order.customerName}</td>
-              <td>${order.items.length} item(s)</td>
-              <td>$${order.total.toFixed(2)}</td>
-              <td>${order.status}</td>
-              <td>${new Date(order.orderDate).toLocaleDateString()}</td>
-              <td class="action-buttons">
-                <button class="btn-danger" onclick="deleteOrder('${order._id}')">Delete</button>
-              </td>
-            </tr>
-          `;
-          tbody.innerHTML += row;
-        });
-
-        document.getElementById('ordersLoading').style.display = 'none';
-      })
-      .catch(err => {
-        showAlert('orderAlert', 'Error loading orders', 'error');
-        document.getElementById('ordersLoading').style.display = 'none';
-      });
-    }
-
-    function deleteOrder(id) {
-      if (confirm('Are you sure?')) {
-        fetch(`${API_URL}/orders/${id}`, { method: 'DELETE' })
-        .then(res => {
-          if (!res.ok) {
-            return res.json().then(data => Promise.reject(data));
+      $.ajax({
+        url: `${API_URL}/items`,
+        method: 'GET',
+        success: function(data) {
+          const devices = data.items || [];
+          
+          // Update stats
+          $('#totalDevices').text(devices.length);
+          $('#activeDevices').text(devices.filter(d => d.status === 'Active').length);
+          
+          if (devices.length === 0) {
+            $('#sensorsEmpty').show();
+            $('#sensorsGrid').hide();
+            $('#sensorsLoading').hide();
+            return;
           }
-          return res.json();
-        })
-        .then(() => {
-          showAlert('orderAlert', 'Deleted!', 'success');
-          loadOrders();
-          loadProducts();
-        })
-        .catch(err => {
-          const message = err.message || 'Error deleting order';
-          showAlert('orderAlert', message, 'error');
-          console.error('Delete error:', err);
-        });
-      }
+
+          // Render sensor cards
+          const grid = $('#sensorsGrid');
+          grid.empty();
+          
+          devices.forEach(device => {
+            const sensorColor = getSensorColor(device.sensorType);
+            const sensorIcon = getSensorIcon(device.sensorType);
+            const statusClass = device.status.toLowerCase();
+            
+            const card = $(`
+              <div class="sensor-card" data-status="${statusClass}">
+                <div class="sensor-card-header" style="border-left: 4px solid ${sensorColor}">
+                  <div class="sensor-icon" style="background: ${sensorColor}20; color: ${sensorColor}">
+                    <i class="fas ${sensorIcon}"></i>
+                  </div>
+                  <div class="sensor-info">
+                    <h3>${device.deviceName}</h3>
+                    <p class="sensor-id"><i class="fas fa-fingerprint"></i> ${device.deviceId}</p>
+                  </div>
+                  <div class="sensor-status status-${statusClass}">
+                    <span class="status-dot"></span>
+                    ${device.status}
+                  </div>
+                </div>
+                <div class="sensor-card-body">
+                  <div class="sensor-detail">
+                    <i class="fas fa-thermometer-half"></i>
+                    <div>
+                      <label>Sensor Type</label>
+                      <span>${device.sensorType}</span>
+                    </div>
+                  </div>
+                  <div class="sensor-detail">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                      <label>Location</label>
+                      <span>${device.location}</span>
+                    </div>
+                  </div>
+                  <div class="sensor-reading">
+                    <div class="reading-value" style="color: ${sensorColor}">
+                      ${formatReading(device.lastReading, device.unit, device.sensorType)}
+                    </div>
+                    <div class="reading-time">
+                      <i class="fas fa-clock"></i> ${new Date(device.lastUpdate).toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+                <div class="sensor-card-actions">
+                  <button class="btn-icon btn-edit" onclick="editSensorDevice('${device._id}')" title="Edit">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn-icon btn-delete" onclick="deleteSensorDevice('${device._id}')" title="Delete">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            `);
+            
+            grid.append(card);
+          });
+
+          $('#sensorsGrid').show();
+          $('#sensorsLoading').hide();
+        },
+        error: function(xhr) {
+          showAlert('sensorAlert', 'Error loading sensor devices', 'error');
+          $('#sensorsLoading').hide();
+        }
+      });
     }
 
-    //initial load
-    window.addEventListener('load', () => {
-      loadCustomers();
+    // Initial load
+    $(document).ready(function() {
+      loadSensorDevices();
     });
   </script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #6366F1;
+      --primary-dark: #4F46E5;
+      --success: #10B981;
+      --danger: #EF4444;
+      --warning: #F59E0B;
+      --info: #3B82F6;
+      --bg: #0F172A;
+      --bg-light: #1E293B;
+      --bg-card: #1E293B;
+      --text: #F1F5F9;
+      --text-light: #94A3B8;
+      --border: #334155;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .app-wrapper {
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .app-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      padding: 2rem;
+      box-shadow: var(--shadow-lg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .icon-wrapper {
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .app-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .app-header p {
+      opacity: 0.9;
+      font-size: 0.95rem;
+    }
+
+    .header-stats {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .stat-item {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .stat-item i {
+      display: block;
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .stat-item span {
+      display: block;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .stat-item small {
+      display: block;
+      opacity: 0.8;
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+    }
+
+    /* Main Content */
+    .main-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-header h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .card-header h2 i {
+      color: var(--primary);
+    }
+
+    .card-body {
+      padding: 2rem;
+    }
+
+    /* Form */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-field.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-field label {
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .form-field label i {
+      color: var(--primary);
+    }
+
+    .form-field input,
+    .form-field select {
+      padding: 0.75rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.95rem;
+      transition: all 0.2s;
+    }
+
+    .form-field input:focus,
+    .form-field select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .btn-secondary {
+      background: var(--bg-light);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border);
+    }
+
+    .btn-icon {
+      background: transparent;
+      border: none;
+      color: var(--text-light);
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-icon:hover {
+      background: var(--bg-light);
+      color: var(--text);
+    }
+
+    .btn-edit {
+      color: var(--info);
+    }
+
+    .btn-edit:hover {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--info);
+    }
+
+    .btn-delete {
+      color: var(--danger);
+    }
+
+    .btn-delete:hover {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+    }
+
+    /* Alert */
+    .alert {
+      padding: 1rem 1.25rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: none;
+      animation: slideDown 0.3s ease;
+      font-weight: 500;
+    }
+
+    .alert-success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .alert-error {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Sensors Grid */
+    .sensors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .sensor-card {
+      background: var(--bg-light);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .sensor-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary);
+    }
+
+    .sensor-card-header {
+      padding: 1.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      background: var(--bg-card);
+    }
+
+    .sensor-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .sensor-info {
+      flex: 1;
+    }
+
+    .sensor-info h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .sensor-id {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .sensor-status {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .status-active {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+
+    .status-active .status-dot {
+      background: var(--success);
+    }
+
+    .status-inactive {
+      background: rgba(148, 163, 184, 0.1);
+      color: var(--text-light);
+    }
+
+    .status-inactive .status-dot {
+      background: var(--text-light);
+    }
+
+    .status-maintenance {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+    }
+
+    .status-maintenance .status-dot {
+      background: var(--warning);
+    }
+
+    .status-error {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+    }
+
+    .status-error .status-dot {
+      background: var(--danger);
+    }
+
+    .sensor-card-body {
+      padding: 1.5rem;
+    }
+
+    .sensor-detail {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .sensor-detail i {
+      color: var(--primary);
+      margin-top: 0.25rem;
+    }
+
+    .sensor-detail label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-light);
+      margin-bottom: 0.25rem;
+    }
+
+    .sensor-detail span {
+      font-weight: 500;
+    }
+
+    .sensor-reading {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .reading-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .reading-time {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sensor-card-actions {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      background: var(--bg-card);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .loading i {
+      font-size: 2rem;
+      color: var(--primary);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-light);
+    }
+
+    .empty-state i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .header-stats {
+        width: 100%;
+        justify-content: space-around;
+      }
+
+      .main-content {
+        padding: 1rem;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sensors-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card-body {
+        padding: 1.5rem;
+      }
+    }
+  </style>
 </body>
 </html>
