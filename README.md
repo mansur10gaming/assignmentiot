@@ -32,5 +32,5 @@ assignment/
 └── README.md                      # This file
 ```
 
-##Author
+## Author
 Abilmansur Aitbay
