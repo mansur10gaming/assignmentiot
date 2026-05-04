@@ -1,0 +1,177 @@
+# ============================================================
+# IoT Sensor Device Management – HTTP Client Tests
+# VS Code REST Client extension (ms-vscode.rest-client)
+# ============================================================
+
+@baseUrl = http://localhost:3000/api
+@contentType = application/json
+@deviceId = REPLACE_WITH_MONGO_ID
+
+
+###
+# TC-01  Health Check
+GET {{baseUrl}}/health
+Content-Type: {{contentType}}
+
+
+###
+# TC-02  Create Sensor Device – Temperature
+POST {{baseUrl}}/items
+Content-Type: {{contentType}}
+
+{
+  "deviceName": "Temperature Sensor 01",
+  "sensorType": "Temperature",
+  "location": "Building A, Room 101",
+  "status": "Active",
+  "lastReading": 25.5,
+  "unit": "Celsius",
+  "deviceId": "SENSOR-HTTP-001"
+}
+
+
+###
+# TC-03  Create Sensor Device – Humidity
+POST {{baseUrl}}/items
+Content-Type: {{contentType}}
+
+{
+  "deviceName": "Humidity Sensor 01",
+  "sensorType": "Humidity",
+  "location": "Building B, Room 205",
+  "status": "Active",
+  "lastReading": 65.0,
+  "unit": "Percent",
+  "deviceId": "SENSOR-HTTP-002"
+}
+
+
+###
+# TC-04  Create – Missing Required Fields
+# Expected: 400
+POST {{baseUrl}}/items
+Content-Type: {{contentType}}
+
+{
+  "deviceName": "Incomplete Sensor"
+}
+
+
+###
+# TC-05  Create – Duplicate deviceId
+# Expected: 409
+POST {{baseUrl}}/items
+Content-Type: {{contentType}}
+
+{
+  "deviceName": "Duplicate Sensor",
+  "sensorType": "Temperature",
+  "location": "Room X",
+  "status": "Active",
+  "unit": "Celsius",
+  "deviceId": "SENSOR-HTTP-001"
+}
+
+
+###
+# TC-06  Get All Sensor Devices
+# Expected: 200 { count, items }
+GET {{baseUrl}}/items
+Content-Type: {{contentType}}
+
+
+###
+# TC-07  Get Single Device by ID
+# ⚠ Вставь _id из ответа TC-02 в @deviceId вверху файла
+GET {{baseUrl}}/items/{{deviceId}}
+Content-Type: {{contentType}}
+
+
+###
+# TC-08  Get Non-Existent Device
+# Expected: 404
+GET {{baseUrl}}/items/000000000000000000000000
+Content-Type: {{contentType}}
+
+
+###
+# TC-09  Update Sensor Device
+# Expected: 200
+PUT {{baseUrl}}/items/{{deviceId}}
+Content-Type: {{contentType}}
+
+{
+  "deviceName": "Temperature Sensor UPDATED",
+  "sensorType": "Temperature",
+  "location": "Building A, Room 101",
+  "status": "Maintenance",
+  "lastReading": 30.1,
+  "unit": "Celsius",
+  "deviceId": "SENSOR-HTTP-001"
+}
+
+
+###
+# TC-10  Update Non-Existent Device
+# Expected: 404
+PUT {{baseUrl}}/items/000000000000000000000000
+Content-Type: {{contentType}}
+
+{
+  "deviceName": "Ghost Sensor"
+}
+
+
+###
+# TC-11  Delete Sensor Device
+# Expected: 200
+DELETE {{baseUrl}}/items/{{deviceId}}
+Content-Type: {{contentType}}
+
+
+###
+# TC-12  Delete Non-Existent Device
+# Expected: 404
+DELETE {{baseUrl}}/items/000000000000000000000000
+Content-Type: {{contentType}}
+
+
+###
+# TC-13  Create Motion Sensor
+# Expected: 201
+POST {{baseUrl}}/items
+Content-Type: {{contentType}}
+
+{
+  "deviceName": "Motion Sensor 01",
+  "sensorType": "Motion",
+  "location": "Building C, Entrance",
+  "status": "Active",
+  "lastReading": 1.0,
+  "unit": "Boolean",
+  "deviceId": "SENSOR-HTTP-003"
+}
+
+
+###
+# TC-14  Create Light Sensor – Inactive
+# Expected: 201
+POST {{baseUrl}}/items
+Content-Type: {{contentType}}
+
+{
+  "deviceName": "Light Sensor 01",
+  "sensorType": "Light",
+  "location": "Building A, Room 102",
+  "status": "Inactive",
+  "lastReading": 450.0,
+  "unit": "Lux",
+  "deviceId": "SENSOR-HTTP-004"
+}
+
+
+###
+# TC-15  Get All – verify count after inserts
+# Expected: 200, items.length >= 3
+GET {{baseUrl}}/items
+Content-Type: {{contentType}}

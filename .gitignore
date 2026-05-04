@@ -40,3 +40,8 @@ data/
 
 # PostgreSQL
 *.sql~
+
+# Testing
+coverage/
+cypress/videos/
+cypress/screenshots/

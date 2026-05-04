@@ -1,0 +1,47 @@
+config:
+  target: 'http://localhost:3000'
+  phases:
+    - duration: 60
+      arrivalRate: 20
+  defaults:
+    headers:
+      Content-Type: 'application/json'
+
+scenarios:
+  - name: Load Test - Get All Sensor Devices
+    flow:
+      - get:
+          url: '/api/items'
+
+  - name: Load Test - Get Health Check
+    flow:
+      - get:
+          url: '/api/health'
+
+  - name: Load Test - Create Sensor Device
+    flow:
+      - post:
+          url: '/api/items'
+          json:
+            deviceName: 'Load Test Sensor'
+            sensorType: 'Temperature'
+            location: 'Building Load, Room 01'
+            status: 'Active'
+            lastReading: 22.5
+            unit: 'Celsius'
+            deviceId: 'LT-{{ $randomString() }}'
+
+  - name: Load Test - Full CRUD Flow
+    flow:
+      - get:
+          url: '/api/items'
+      - post:
+          url: '/api/items'
+          json:
+            deviceName: 'CRUD Load Sensor'
+            sensorType: 'Humidity'
+            location: 'Building CRUD, Room 02'
+            status: 'Active'
+            lastReading: 55.0
+            unit: 'Percent'
+            deviceId: 'CRUD-{{ $randomString() }}'

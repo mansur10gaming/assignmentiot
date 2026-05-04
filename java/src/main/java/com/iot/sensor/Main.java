@@ -28,7 +28,7 @@ public class Main {
     private static final String MONGODB_DATABASE = "iot_db";
     
     // Repository type: "POSTGRESQL" or "MONGODB"
-    private static final String REPOSITORY_TYPE = "POSTGRESQL"; // Change to "MONGODB" to switch
+    private static final String REPOSITORY_TYPE = "MONGODB"; // switch
     
     public static void main(String[] args) {
         System.out.println("=== IoT Sensor Device Management System ===");
